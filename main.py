@@ -94,48 +94,7 @@ class KaboomEnv:
         pygame.display.flip()
 
 
-class RuleBasedAgent:
-    def __init__(self, basket_speed, basket_width, width):
-        self.basket_speed = basket_speed
-        self.basket_width = basket_width
-        self.width = width
 
-    def get_action(self, state):
-        basket_pos, ball_pos, _, _ = state
-        
-        # Convert normalized positions back to pixel coordinates
-        basket_x = basket_pos * self.width
-        ball_x = ball_pos * self.width
-        
-        # Calculate the number of steps needed
-        steps = int((ball_x - basket_x) / self.basket_speed)
-        
-        # Account for the basket's width
-        if abs(steps) * self.basket_speed <= self.basket_width / 2:
-            return 1  # Stay in place if the ball will land within the basket's width
-        elif steps > 0:
-            return 2  # Move right
-        else:
-            return 0  # Move left
-
-def collect_data_with_rule_based_agent(env, agent, num_episodes):
-    rule_based_agent = RuleBasedAgent(basket_speed=env.basket_speed, 
-                                      basket_width=env.basket_width, 
-                                      width=env.width)
-    total_score = 0
-    for episode in range(num_episodes):
-        state = env.reset()
-        done = False
-        while not done:
-            action = rule_based_agent.get_action(state)
-            next_state, reward, done, info = env.step(action)
-            agent.replay_buffer.append((state, action, reward, next_state, done))
-            state = next_state
-        total_score += info['score']
-        print(f"Rule-based Agent - Episode {episode + 1}, Score: {info['score']}")
-    
-    average_score = total_score / num_episodes
-    print(f"Rule-based Agent - Average Score over {num_episodes} episodes: {average_score:.2f}")
 
 def train_drl_agent(env, agent, num_episodes, render=True, fps=60):
     total_score = 0
@@ -182,9 +141,6 @@ def play_drl_agent_visible(env, agent):
 def main():
     env = KaboomEnv()
     agent = LearningAgent(input_size=4, output_size=3)
-
-    print("Collecting data with rule-based agent...")
-    collect_data_with_rule_based_agent(env, agent, num_episodes=100)
 
     print("\nTraining DRL agent...")
     train_drl_agent(env, agent, num_episodes=500, render=True, fps=60)
