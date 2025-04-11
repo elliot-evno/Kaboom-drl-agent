@@ -1,14 +1,7 @@
-'''
-Made with a little bit of help from Claude 
-'''
 import numpy as np
 import pygame
 import sys
-import torch
-import torch.nn as nn
-import torch.optim as optim
-import random
-from collections import deque
+
 from agent import LearningAgent
 
 class KaboomEnv:
