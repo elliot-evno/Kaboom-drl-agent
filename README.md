@@ -4,6 +4,9 @@
 
 To run: 
 ```bash
-git clone https://github.com/elliotnn/Kaboom-drl-agent.git
-pip install numpy pygame pytorch
+git clone https://github.com/elliotnn/kaboom-drl-agent.git
+cd kaboom-drl-agent
+python -m venv venv
+source venv/bin/activate 
+pip install -r requirements.txt
 python main.py
