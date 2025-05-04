@@ -1,7 +1,6 @@
-import numpy as np
 import pygame
 import sys
-
+import torch
 from agent import LearningAgent
 
 class KaboomEnv:
@@ -22,14 +21,14 @@ class KaboomEnv:
 
     def reset(self):
         self.basket_pos = self.width // 2
-        self.ball_pos = np.random.randint(0, self.width)
+        self.ball_pos = torch.random.randint(0, self.width)
         self.ball_height = 0
         self.misses = 0
         self.score = 0
         return self._get_state()
 
     def _get_state(self):
-        return np.array([
+        return torch.tensor([
             self.basket_pos / self.width,
             self.ball_pos / self.width,
             self.ball_height / self.height,
@@ -52,7 +51,7 @@ class KaboomEnv:
                 reward = -5  # Increased penalty for missing
                 self.misses += 1
 
-            self.ball_pos = np.random.randint(0, self.width)
+            self.ball_pos = torch.random.randint(0, self.width)
             self.ball_height = 0
         else:
             reward = -0.1  # Small negative reward for each step to encourage faster catching
