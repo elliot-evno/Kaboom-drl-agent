@@ -21,13 +21,14 @@ class KaboomEnv:
 
     def reset(self):
         self.basket_pos = self.width // 2
-        self.ball_pos = torch.random.randint(0, self.width)
+        self.ball_pos = torch.randint(0, self.width, (1,))
         self.ball_height = 0
         self.misses = 0
         self.score = 0
         return self._get_state()
 
     def _get_state(self):
+     
         return torch.tensor([
             self.basket_pos / self.width,
             self.ball_pos / self.width,
@@ -51,7 +52,7 @@ class KaboomEnv:
                 reward = -5  # Increased penalty for missing
                 self.misses += 1
 
-            self.ball_pos = torch.random.randint(0, self.width)
+            self.ball_pos = torch.randint(0, self.width, (1,))
             self.ball_height = 0
         else:
             reward = -0.1  # Small negative reward for each step to encourage faster catching
@@ -113,7 +114,7 @@ def train_drl_agent(env, agent, num_episodes, render=True, fps=60):
         total_score += info['score']
         if (episode + 1) % 10 == 0:
             print(f"DRL Agent Training - Episode {episode + 1}, Score: {info['score']}, "
-                  f"Reward: {episode_reward:.2f}, Epsilon: {agent.get_epsilon():.4f}")
+                  f"Reward: {episode_reward:.2f}, Temperature: {agent.get_temperature():.4f}")
     
     average_score = total_score / num_episodes
     print(f"DRL Agent Training - Average Score over {num_episodes} episodes: {average_score:.2f}")
@@ -138,7 +139,7 @@ def main():
     train_drl_agent(env, agent, num_episodes=500, render=True, fps=60)
 
     print("\nPlaying with trained DRL agent (visible, no exploration)...")
-    agent.epsilon = 0  # Set epsilon to 0 for no exploration
+    #agent.epsilon = 0  # Set epsilon to 0 for no exploration
     while True:
         play_drl_agent_visible(env, agent)
         play_again = input("Play again? (y/n): ").lower()
