@@ -53,10 +53,13 @@ class LearningAgent:
         if self.total_steps % self.target_update_frequency == 0:
             self.target_dqn.load_state_dict(self.dqn.state_dict())
 
-        if self.temperature > 1:
-            self.temperature = max(1, self.temperature * 0.95)
-        else:
-            self.temperature = min(1, self.temperature * 1.05)
+        if self.total_steps % 300 == 0:
+            if self.temperature > 1:
+                self.temperature = max(1, self.temperature * 0.99)
+                print(f"Temperature: {self.temperature}")
+            else:
+                self.temperature = min(1, self.temperature * 1.01)
+                print(f"Temperature: {self.temperature}")
 
     def get_temperature(self):
         return self.temperature
